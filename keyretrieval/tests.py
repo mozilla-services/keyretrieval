@@ -43,11 +43,15 @@ from pyramid.httpexceptions import (HTTPNotFound,
                                     HTTPRequestEntityTooLarge)
 
 from keyretrieval.views import get_key, put_key, delete_key
+from keyretrieval.storage import IKeyRetrievalStorage
+from keyretrieval.storage.sql import SQLKeyRetrievalStorage
 
 
 class ViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
+        storage = SQLKeyRetrievalStorage("sqlite://", create_tables=True)
+        self.config.registry.registerUtility(storage, IKeyRetrievalStorage)
 
     def tearDown(self):
         testing.tearDown()

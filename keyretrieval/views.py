@@ -44,9 +44,7 @@ from pyramid.httpexceptions import (HTTPNoContent, HTTPNotFound,
 
 from cornice import Service
 
-# Mapping from usernames to uploaded key data.
-# Eventually this will live in a configurable backend store.
-_USER_KEYS = {}
+from keyretrieval.storage import IKeyRetrievalStorage
 
 
 def user_key_acl(request):
@@ -66,8 +64,9 @@ user_key = Service(name="user_key", path="/{username}", acl=user_key_acl)
 def get_key(request):
     """Returns the uploaded key-retrieval information."""
     username = request.matchdict["username"]
+    store = request.registry.getUtility(IKeyRetrievalStorage)
     try:
-        key = _USER_KEYS[username]
+        key = store.get(username)
     except KeyError:
         raise HTTPNotFound()
     else:
@@ -88,7 +87,8 @@ def put_key(request):
         raise HTTPRequestEntityTooLarge()
     # Store the uploaded data.
     username = request.matchdict["username"]
-    _USER_KEYS[username] = request.body
+    store = request.registry.getUtility(IKeyRetrievalStorage)
+    store.set(username, request.body)
     return Response(status=204)
 
 
@@ -96,8 +96,9 @@ def put_key(request):
 def delete_key(request):
     """Delete any uploaded key-retrieval information."""
     username = request.matchdict["username"]
+    store = request.registry.getUtility(IKeyRetrievalStorage)
     try:
-        del _USER_KEYS[username]
+        store.delete(username)
     except KeyError:
         raise HTTPNotFound()
     else:

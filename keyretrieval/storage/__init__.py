@@ -34,20 +34,18 @@
 #
 # ***** END LICENSE BLOCK *****
 
-
-from mozsvc.config import get_configurator
-from mozsvc.plugin import load_and_register
+from zope.interface import Interface
 
 
-def includeme(config):
-    config.include("pyramid_multiauth")
-    config.include("cornice")
-    config.include("mozsvc")
-    load_and_register("storage", config)
-    config.scan("keyretrieval.views")
+class IKeyRetrievalStorage(Interface):
+    """Interface definition for key-retrieval storage backends."""
 
+    def get(userid):
+        """Get the data stored for the given userid."""
 
-def main(global_config, **settings):
-    config = get_configurator(global_config, **settings)
-    config.include(includeme)
-    return config.make_wsgi_app()
+    def set(userid, data):
+        """Store the given data for the given userid."""
+
+    def delete(userid):
+        """Delete the data stored for the given userid."""
+
