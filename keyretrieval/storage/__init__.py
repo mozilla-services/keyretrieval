@@ -48,4 +48,3 @@ class IKeyRetrievalStorage(Interface):
 
     def delete(userid):
         """Delete the data stored for the given userid."""
-

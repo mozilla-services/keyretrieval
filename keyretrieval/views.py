@@ -34,10 +34,9 @@
 #
 # ***** END LICENSE BLOCK *****
 
-from pyramid.exceptions import Forbidden
-from pyramid.security import authenticated_userid, Allow
+from pyramid.security import Allow
 from pyramid.response import Response
-from pyramid.httpexceptions import (HTTPNoContent, HTTPNotFound,
+from pyramid.httpexceptions import (HTTPNotFound,
                                     HTTPUnsupportedMediaType,
                                     HTTPLengthRequired,
                                     HTTPRequestEntityTooLarge)
